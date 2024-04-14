@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SeedService } from './seed/seed.service';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 declare const module: any;
 
@@ -15,7 +16,16 @@ async function bootstrap() {
   // const seedService = app.get(SeedService);
   // await seedService.seed();
 
+  const config = new DocumentBuilder()
+    .setTitle('Spotify Clone')
+    .setDescription('The Spotify Clone Api documentation')
+    .setVersion('1.0')
+    .build();
+
   const configService = app.get(ConfigService);
+  const document = SwaggerModule.createDocument(app, config); //2
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(configService.get<number>('port'));
 
   if (module.hot) {
